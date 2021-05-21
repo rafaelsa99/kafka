@@ -63,17 +63,76 @@ public class PProducer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabelTitle = new javax.swing.JLabel();
+        jScrollPane_Records = new javax.swing.JScrollPane();
+        jTable_Records = new javax.swing.JTable();
+        jLabel_TotalRecords = new javax.swing.JLabel();
+        jLabel_TitleTotalRecords = new javax.swing.JLabel();
+        jScrollPaneMessages = new javax.swing.JScrollPane();
+        jListMessages = new javax.swing.JList<>();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabelTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabelTitle.setText("Producer");
+
+        jScrollPane_Records.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jTable_Records.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTable_Records.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "SensorId", "Num Records"
+            }
+        ));
+        jScrollPane_Records.setViewportView(jTable_Records);
+
+        jLabel_TotalRecords.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel_TotalRecords.setText("0");
+
+        jLabel_TitleTotalRecords.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel_TitleTotalRecords.setText("Total Records");
+
+        jScrollPaneMessages.setBorder(javax.swing.BorderFactory.createTitledBorder("Income Messages"));
+        jScrollPaneMessages.setViewportView(jListMessages);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(112, 112, 112)
+                        .addComponent(jLabel_TitleTotalRecords)
+                        .addGap(83, 83, 83)
+                        .addComponent(jLabel_TotalRecords))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(183, 183, 183)
+                        .addComponent(jLabelTitle))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPaneMessages, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane_Records, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jLabelTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane_Records, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_TitleTotalRecords)
+                    .addComponent(jLabel_TotalRecords))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPaneMessages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -115,5 +174,12 @@ public class PProducer extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JLabel jLabel_TitleTotalRecords;
+    private javax.swing.JLabel jLabel_TotalRecords;
+    private javax.swing.JList<String> jListMessages;
+    private javax.swing.JScrollPane jScrollPaneMessages;
+    private javax.swing.JScrollPane jScrollPane_Records;
+    private javax.swing.JTable jTable_Records;
     // End of variables declaration//GEN-END:variables
 }
