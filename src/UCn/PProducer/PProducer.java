@@ -3,9 +3,14 @@
  */
 package UCn.PProducer;
 
-import UCn.Message.Message;
+import UCn.Communication.CServer;
+import UCn.Communication.Message;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Properties;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.SwingUtilities;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -16,11 +21,22 @@ import org.apache.kafka.clients.producer.ProducerRecord;
  */
 public class PProducer extends javax.swing.JFrame {
 
+    private static final int SERVER_PORT = 5000;
+    
     /**
      * Creates new form PProducer
+     * @param serverPort server port receive messages from PSOURCE
      */
-    public PProducer() {
+    public PProducer(int serverPort) {
         initComponents();
+        this.setVisible(true);
+        startServer(serverPort);
+    }
+    
+    private void startServer(int serverPort) {
+        CServer cServer = new CServer(serverPort);
+        cServer.openServer();
+        cServer.start();
     }
     
     /**
@@ -53,6 +69,17 @@ public class PProducer extends javax.swing.JFrame {
            }
            producer.close();
     }
+    
+    public static void appendRecord(Message record){
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                System.out.println(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
+            });
+        } catch (InterruptedException | InvocationTargetException ex) {
+            System.out.println(ex.toString());
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -142,6 +169,7 @@ public class PProducer extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -166,10 +194,18 @@ public class PProducer extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PProducer().setVisible(true);
+        java.awt.EventQueue.invokeLater(() -> {
+            int serverPort = SERVER_PORT;
+            if(args.length == 1){
+                try{
+                    serverPort = Integer.parseInt(args[0]);
+                }catch (NumberFormatException ex){
+                    System.out.println("Invalid parameter!\nParameters: [Optional: serverPort (Default = " + SERVER_PORT +")]\n");
+                }
+            } else if (args.length > 1){
+                System.out.println("Invalid parameters!\nParameters: [Optional: serverPort (Default = " + SERVER_PORT +")]\n");
             }
+            new PProducer(serverPort);
         });
     }
 

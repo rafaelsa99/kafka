@@ -3,7 +3,7 @@
  */
 package UCn.PConsumer;
 
-import UCn.Message.Message;
+import UCn.Communication.Message;
 import UCn.RebalanceListener.RebalanceListener;
 import java.util.Arrays;
 import java.util.Properties;

@@ -3,48 +3,29 @@
  */
 package UCn.PSource;
 
-        
-import UCn.Message.Message;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.lang.reflect.InvocationTargetException;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author omp
  */
 public class PSource extends javax.swing.JFrame {
     
-    private final File file;                                /* Ficheiro de leitura */
-    private final ArrayList<Message> messageList;           /* Lista para guardar as mensagens lidas do ficheiro */
-    private final String sensorTopic = "SensorTopic";       /* Topico de escrita */
-
+    private static final String FILENAME = "src/Data/sensorShort.txt";
+    private static final int PORT = 5000;
+    private static final String HOSTNAME = "localhost";
+    
     /**
      * Creates new form PSource
      */
-    public PSource() {
+    public PSource(String filename, String hostname, int port) {
         initComponents();
-        file = new File("src/Data/sensor.txt");
-        messageList = new ArrayList<>();
+        this.setVisible(true);
+        Data data = new Data(filename, hostname, port);
+        data.start();
     }
     
-    public void readFile() {
-        Message data;
-        Scanner myReader;
-        
-        try {
-            myReader = new Scanner(file);
-            while (myReader.hasNextLine()) {
-                data = new Message(myReader.nextLine());
-                messageList.add(data);
-            }
-            myReader.close();
-            
-        } catch (FileNotFoundException ex) {
-            System.out.println(ex);
-        }
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,22 +35,55 @@ public class PSource extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel1.setText("SOURCE");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(159, 159, 159)
+                .addComponent(jLabel1)
+                .addContainerGap(158, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel1)
+                .addContainerGap(252, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public static void endGUI(){
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                System.exit(0);
+            });
+        } catch (InterruptedException | InvocationTargetException ex) {
+            System.out.println(ex.toString());
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -98,13 +112,41 @@ public class PSource extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PSource().setVisible(true);
+        java.awt.EventQueue.invokeLater(() -> {
+            if((args.length % 2) != 0){
+                System.out.println("Optional arguments: "
+                        + "\n\t-h <PRODUCER_HOSTNAME>: Producer Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p <PRODUCER_PORT>: Producer Server Port (Default = " + PORT + ")"
+                        + "\n\t-f <FILENAME>: Sensors Filename (Default = " + FILENAME + ")");
+                throw new IllegalArgumentException("Invalid Arguments");
             }
+            String filename = FILENAME;
+            String hostname = HOSTNAME;
+            int port = PORT;
+            try{
+                for (int i = 0; i < args.length; i+=2) {
+                    switch(args[i].toLowerCase()){
+                        case "-h": hostname = args[i+1];
+                                   break;
+                        case "-p": port = Integer.valueOf(args[i+1]);
+                                   break;
+                        case "-f": filename = args[i+1];
+                                   break;
+                        default: throw new IllegalArgumentException();
+                    }
+                }
+            } catch(IllegalArgumentException ex){
+                System.out.println("Optional arguments: "
+                        + "\n\t-h <PRODUCER_HOSTNAME>: Producer Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p <PRODUCER_PORT>: Producer Server Port (Default = " + PORT + ")"
+                        + "\n\t-f <FILENAME>: Sensors Filename (Default = " + FILENAME + ")");
+                throw new IllegalArgumentException("Invalid Arguments");
+            }
+            new PSource(filename, hostname, port);
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
