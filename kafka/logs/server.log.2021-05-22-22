@@ -1,0 +1,3 @@
+[2021-05-22 22:41:46,570] INFO [GroupCoordinator 0]: Preparing to rebalance group SensorGroup in state PreparingRebalance with old generation 6 (__consumer_offsets-37) (reason: Adding new member consumer-SensorGroup-1-068aa9b8-e95d-43e1-b9ce-3cdfc2b2f05e with group instance id None) (kafka.coordinator.group.GroupCoordinator)
+[2021-05-22 22:41:46,573] INFO [GroupCoordinator 0]: Stabilized group SensorGroup generation 7 (__consumer_offsets-37) (kafka.coordinator.group.GroupCoordinator)
+[2021-05-22 22:41:46,590] INFO [GroupCoordinator 0]: Assignment received from leader for group SensorGroup for generation 7 (kafka.coordinator.group.GroupCoordinator)
