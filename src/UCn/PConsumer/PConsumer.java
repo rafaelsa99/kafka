@@ -5,7 +5,11 @@ package UCn.PConsumer;
 
 import UCn.Communication.Message;
 import UCn.RebalanceListener.RebalanceListener;
+import UCn.Record.Record;
+import UCn.Record.RecordDeserializer;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -17,42 +21,48 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  */
 public class PConsumer extends javax.swing.JFrame {
 
-    private final String sensorTopic = "SensorTopic";         /* Topico de leitura */
-    private final String groupName = "SensorTopicGroup";     /* Consumer Group */
+    private static final String TOPIC = "Sensor";         /* Topico de leitura */
+    private static final String GROUP = "SensorGroup";     /* Consumer Group */
     /**
      * Creates new form PConsumer
      */
     public PConsumer() {
         initComponents();
+        new Reader().start();
     }
     
-    private void readFromTopic(){
-        
-        Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092, localhost:9093, localhost:9094");
-        props.put("group.id", groupName);
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "Message.MessageDeserializer");
-        
-        KafkaConsumer<String, Message> consumer = new KafkaConsumer<>(props);
-        RebalanceListener rebalanceListener = new RebalanceListener(consumer);
-        consumer.subscribe(Arrays.asList(sensorTopic), rebalanceListener);
-        
-        ConsumerRecords<String, Message> records = consumer.poll(100);
-        try{
-            for (ConsumerRecord<String, Message> record : records){
-                System.out.println(record.value().toString());
+    class Reader extends Thread{
 
+        @Override
+        public void run() {
+            Properties props = new Properties();
+            props.put("bootstrap.servers", "localhost:9093, localhost:9094, localhost:9095, localhost:9096, localhost:9097, localhost:9098");
+            props.put("group.id", GROUP);
+            props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+            props.put("value.deserializer", RecordDeserializer.class.getName());
+            
+            KafkaConsumer<String, Record> consumer = new KafkaConsumer<>(props);
+            try{            
+                //RebalanceListener rebalanceListener = new RebalanceListener(consumer);
+                //consumer.subscribe(Arrays.asList(TOPIC), rebalanceListener);
+                consumer.subscribe(Collections.singletonList(TOPIC));
+                while(true){
+                    ConsumerRecords<String, Record> records = consumer.poll(Duration.ofMillis(100));
+
+                    for (ConsumerRecord<String, Record> record : records){
+                        System.out.println(record.value().toString());
+                    }
+                    consumer.commitSync();
+                }
             }
-            consumer.commitSync();
+            catch(Exception ex){
+                System.out.println(ex);
+            }
+            finally {
+                consumer.close();
+            }
         }
-        catch(Exception ex){
-            System.out.println(ex);
-        }
-        finally {
-            consumer.close();
-        }
-    }
+    }        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -166,10 +176,8 @@ public class PConsumer extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PConsumer().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new PConsumer().setVisible(true);
         });
     }
 

@@ -2,6 +2,7 @@
 package UCn.Communication;
 
 import UCn.PProducer.PProducer;
+import UCn.Record.Record;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -59,7 +60,7 @@ public class CServer extends Thread{
                     }
                     if(input.getMessageType() == MessageTypes.RECORD){
                         PProducer.appendRecord(input);
-                        //SEND RECORD TO TOPIC
+                        PProducer.sendToTopic(new Record(input.getSensorId(), input.getTemperature(), input.getTimestamp()));
                     }
                     out.writeObject(new Message(MessageTypes.RESP_OK));
                     out.close();

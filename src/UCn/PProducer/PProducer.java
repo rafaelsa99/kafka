@@ -5,11 +5,11 @@ package UCn.PProducer;
 
 import UCn.Communication.CServer;
 import UCn.Communication.Message;
+import UCn.Record.Record;
+import UCn.Record.RecordSerializer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Properties;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -22,6 +22,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 public class PProducer extends javax.swing.JFrame {
 
     private static final int SERVER_PORT = 5000;
+    private static final String TOPIC = "Sensor";
     
     /**
      * Creates new form PProducer
@@ -41,33 +42,20 @@ public class PProducer extends javax.swing.JFrame {
     
     /**
     * Função: void sendToTopics Esta função cria o KafkaProducer para enviar as
-    * mensagens para os diferentes topicos. É ainda responsável pelo processamento
-    * e segurança ao enviar as diferentes mensagens.
+    * mensagens para os diferentes topicos.É ainda responsável pelo processamento
+ e segurança ao enviar as diferentes mensagens.
+     * @param record record to be sent
     */
-    public void sendToTopic(String topic, ArrayList<Message> messageList){
+    public static void sendToTopic(Record record){
 
-           Properties props = new Properties();
-           props.put("bootstrap.servers", "localhost:9092, localhost:9093, localhost:9094");
-           props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-           props.put("value.serializer", "Message.MessageSerializer");
-           Producer<String, Message> producer = new KafkaProducer<>(props);
-
-           for (Message msg : messageList){
-
-               /* INTERRUPCAO PARA VISUALIZACAO */
-               try {
-                   Thread.sleep(1000);
-               } catch (InterruptedException ex) {
-                   System.out.println(ex);
-               }
-
-               ProducerRecord<String, Message> record;
-               props.put("acks", "0");
-               // SensorTopic
-               record = new ProducerRecord<>(topic, msg);
-               producer.send(record);
-           }
-           producer.close();
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "localhost:9093, localhost:9094, localhost:9095, localhost:9096, localhost:9097, localhost:9098");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", RecordSerializer.class.getName());
+        try (Producer<String, Record> producer = new KafkaProducer<>(props)) {
+            ProducerRecord<String, Record> pRecord = new ProducerRecord<>(TOPIC, record);
+            producer.send(pRecord);
+        }
     }
     
     public static void appendRecord(Message record){
