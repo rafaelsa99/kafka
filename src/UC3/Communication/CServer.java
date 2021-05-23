@@ -20,12 +20,14 @@ public class CServer extends Thread{
     /** Server socket. */
     private ServerSocket serverSocket;
     
+    private PProducer pp;
     /**
      * Communication server instantiation.
      * @param portNumber Port of the server
      */
-    public CServer(int portNumber) {
+    public CServer(int portNumber, PProducer pp) {
         this.portNumber = portNumber;
+        this.pp = pp;
     }
     
     /**
@@ -55,8 +57,8 @@ public class CServer extends Thread{
                         end = true;
                     }
                     if(input.getMessageType() == MessageTypes.RECORD){
-                        PProducer.appendRecord(input);
-                        PProducer.sendToTopic(new Record(input.getSensorId(), input.getTemperature(), input.getTimestamp()));
+                        pp.appendRecord(input);
+                        pp.sendToTopic(new Record(input.getSensorId(), input.getTemperature(), input.getTimestamp()));
                     }
                     out.writeObject(new Message(MessageTypes.RESP_OK));
                     out.close();

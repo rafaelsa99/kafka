@@ -5,9 +5,13 @@ package UC3.PConsumer;
 
 import UC3.Record.Record;
 import UC3.Record.RecordDeserializer;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -25,6 +29,7 @@ public class PConsumer extends javax.swing.JFrame {
      */
     public PConsumer() {
         initComponents();
+        createInterface(6);
         new Reader().start();
     }
     
@@ -48,7 +53,7 @@ public class PConsumer extends javax.swing.JFrame {
                     ConsumerRecords<String, Record> records = consumer.poll(Duration.ofMillis(100));
 
                     for (ConsumerRecord<String, Record> record : records){
-                        System.out.println(record.value().toString());
+                        appendRecord(record.value());
                     }
                     consumer.commitSync(); //OR ASYNC????
                 }
@@ -59,6 +64,43 @@ public class PConsumer extends javax.swing.JFrame {
         }
     }        
 
+    public static void appendRecord(Record record){
+        appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
+        updateInterface(Integer.parseInt(record.getSensorId()));
+        updateTotalRecords();
+    }
+    
+    public static void updateTotalRecords(){
+        int total = Integer.parseInt(jLabel_TotalRecords.getText());
+        jLabel_TotalRecords.setText(String.valueOf(++total));
+    }
+    
+    public static void appendMessageToInterface(String message){
+        DefaultListModel model = (DefaultListModel) jListMessages.getModel();
+        model.addElement(message);
+    }   
+    
+    public static void updateInterface(int sensorId){
+        DefaultTableModel model;
+        model = (DefaultTableModel)jTable_Records.getModel();
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                int value = Integer.valueOf(jTable_Records.getValueAt(sensorId, 1).toString());
+                jTable_Records.setValueAt(++value, sensorId, 1);
+            });
+        } catch (InterruptedException | InvocationTargetException ex) {
+            System.out.println(ex.toString());
+        }
+    }
+    
+    public static void createInterface(int numSensor){
+        DefaultTableModel model;
+        model = (DefaultTableModel)jTable_Records.getModel();
+        for(int i = 0; i< numSensor; i++){
+            model.addRow(new Object[]{i,0});
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,6 +113,7 @@ public class PConsumer extends javax.swing.JFrame {
         jLabelTitle = new javax.swing.JLabel();
         jScrollPaneMessages = new javax.swing.JScrollPane();
         jListMessages = new javax.swing.JList<>();
+        jListMessages.setModel(new javax.swing.DefaultListModel());
         jScrollPane_Records = new javax.swing.JScrollPane();
         jTable_Records = new javax.swing.JTable();
         jLabel_TotalRecords = new javax.swing.JLabel();
@@ -179,10 +222,10 @@ public class PConsumer extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabel_TitleTotalRecords;
-    private javax.swing.JLabel jLabel_TotalRecords;
-    private javax.swing.JList<String> jListMessages;
+    private static javax.swing.JLabel jLabel_TotalRecords;
+    private static javax.swing.JList<String> jListMessages;
     private javax.swing.JScrollPane jScrollPaneMessages;
     private javax.swing.JScrollPane jScrollPane_Records;
-    private javax.swing.JTable jTable_Records;
+    private static javax.swing.JTable jTable_Records;
     // End of variables declaration//GEN-END:variables
 }

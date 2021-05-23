@@ -8,10 +8,7 @@ import UC1.Communication.Message;
 import UC1.Record.Record;
 import UC1.Record.RecordSerializer;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -72,22 +69,20 @@ public class PProducer extends javax.swing.JFrame {
     }
     
     public static void appendRecord(Message record){
-        try {
-            SwingUtilities.invokeAndWait(() -> {
-                System.out.println(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
-                appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
-            });
-        } catch (InterruptedException | InvocationTargetException ex) {
-            System.out.println(ex.toString());
-        }
+        appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
+        updateInterface(Integer.parseInt(record.getSensorId()));
+        updateTotalRecords();
     }
     
     public static void appendMessageToInterface(String message){
-        DefaultListModel model;
-        model = (DefaultListModel)jListMessages.getModel();
+        DefaultListModel model = (DefaultListModel) jListMessages.getModel();
         model.addElement(message);
-    }
+    }   
     
+    public static void updateTotalRecords(){
+        int total = Integer.parseInt(jLabel_TotalRecords.getText());
+        jLabel_TotalRecords.setText(String.valueOf(++total));
+    }
     
     public static void updateInterface(int sensorId){
         DefaultTableModel model;
@@ -97,19 +92,17 @@ public class PProducer extends javax.swing.JFrame {
                 int value = Integer.valueOf(jTable_Records.getValueAt(sensorId, 1).toString());
                 jTable_Records.setValueAt(++value, sensorId, 1);
             });
-        } catch (InterruptedException ex) {
-            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException | InvocationTargetException ex) {
+            System.out.println(ex.toString());
         }
     }
     
     public static void createInterface(int numSensor){
-    DefaultTableModel model;
-    model = (DefaultTableModel)jTable_Records.getModel();
-    for(int i = 0; i< numSensor; i++){
-        model.addRow(new Object[]{i,0});
-    }
+        DefaultTableModel model;
+        model = (DefaultTableModel)jTable_Records.getModel();
+        for(int i = 0; i< numSensor; i++){
+            model.addRow(new Object[]{i,0});
+        }
     }
     
 
@@ -129,7 +122,7 @@ public class PProducer extends javax.swing.JFrame {
         jLabel_TitleTotalRecords = new javax.swing.JLabel();
         jScrollPaneMessages = new javax.swing.JScrollPane();
         jListMessages = new javax.swing.JList<>();
-
+		jListMessages.setModel(new javax.swing.DefaultListModel());
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabelTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -244,7 +237,7 @@ public class PProducer extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabel_TitleTotalRecords;
-    private javax.swing.JLabel jLabel_TotalRecords;
+    private static javax.swing.JLabel jLabel_TotalRecords;
     private static javax.swing.JList<String> jListMessages;
     private javax.swing.JScrollPane jScrollPaneMessages;
     private static javax.swing.JScrollPane jScrollPane_Records;

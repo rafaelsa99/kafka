@@ -9,7 +9,9 @@ import UC3.Record.Record;
 import UC3.Record.RecordSerializer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
+import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -30,12 +32,13 @@ public class PProducer extends javax.swing.JFrame {
      */
     public PProducer(int serverPort) {
         initComponents();
+        createInterface(6);
         this.setVisible(true);
         startServer(serverPort);
     }
     
     private void startServer(int serverPort) {
-        CServer cServer = new CServer(serverPort);
+        CServer cServer = new CServer(serverPort, this);
         cServer.openServer();
         cServer.start();
     }
@@ -57,7 +60,7 @@ public class PProducer extends javax.swing.JFrame {
         //props.put("batch.size", ????);
         //props.put("linger.ms", ????);
         props.put("max.in.flight.requests.per.connection", 1);
-        props.put("compression.type", "uncompressed");
+        props.put("compression.type", "none");
         //props.put("delivery.timeout.ms", ????);   
         props.put("retries", 0);
         try (Producer<String, Record> producer = new KafkaProducer<>(props)) {
@@ -66,16 +69,42 @@ public class PProducer extends javax.swing.JFrame {
         }
     }
     
-    public static void appendRecord(Message record){
+    public void appendRecord(Message record){
+        appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
+        updateInterface(Integer.parseInt(record.getSensorId()));
+        updateTotalRecords();
+    }
+    
+    public void appendMessageToInterface(String message){
+        DefaultListModel model = (DefaultListModel) jListMessages.getModel();
+        model.addElement(message);
+    }   
+    
+    public void updateTotalRecords(){
+        int total = Integer.parseInt(jLabel_TotalRecords.getText());
+        jLabel_TotalRecords.setText(String.valueOf(++total));
+    }
+    
+    public void updateInterface(int sensorId){
+        DefaultTableModel model;
+        model = (DefaultTableModel)jTable_Records.getModel();
         try {
             SwingUtilities.invokeAndWait(() -> {
-                System.out.println(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
+                int value = Integer.valueOf(jTable_Records.getValueAt(sensorId, 1).toString());
+                jTable_Records.setValueAt(++value, sensorId, 1);
             });
         } catch (InterruptedException | InvocationTargetException ex) {
             System.out.println(ex.toString());
         }
     }
     
+    public void createInterface(int numSensor){
+        DefaultTableModel model;
+        model = (DefaultTableModel)jTable_Records.getModel();
+        for(int i = 0; i< numSensor; i++){
+            model.addRow(new Object[]{i,0});
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,7 +122,7 @@ public class PProducer extends javax.swing.JFrame {
         jLabel_TitleTotalRecords = new javax.swing.JLabel();
         jScrollPaneMessages = new javax.swing.JScrollPane();
         jListMessages = new javax.swing.JList<>();
-
+		jListMessages.setModel(new javax.swing.DefaultListModel());
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabelTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
