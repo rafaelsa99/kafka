@@ -39,8 +39,9 @@ public class PConsumer extends javax.swing.JFrame {
             props.put("value.deserializer", RecordDeserializer.class.getName());
             //props.put("fetch.min.bytes", ????);
             props.put("enable.auto.commit", true);
-            try( //props.put("auto.commit.interval.ms", ????);
-                    KafkaConsumer<String, Record> consumer = new KafkaConsumer<>(props)) {            
+            //props.put("auto.commit.interval.ms", ????);
+            try( 
+                KafkaConsumer<String, Record> consumer = new KafkaConsumer<>(props)) {            
                 //RebalanceListener rebalanceListener = new RebalanceListener(consumer);
                 //consumer.subscribe(Arrays.asList(TOPIC), rebalanceListener);
                 consumer.subscribe(Collections.singletonList(TOPIC));
@@ -50,7 +51,6 @@ public class PConsumer extends javax.swing.JFrame {
                     for (ConsumerRecord<String, Record> record : records){
                         System.out.println(record.value().toString());
                     }
-                    consumer.commitSync(); //OR ASYNC????
                 }
             }
             catch(Exception ex){

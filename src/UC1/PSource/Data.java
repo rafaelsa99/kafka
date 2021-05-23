@@ -1,7 +1,7 @@
 
 package UC1.PSource;
 
-import UC2.Communication.CClient;
+import UC1.Communication.CClient;
 import UC1.Communication.Message;
 import UC1.Communication.MessageTypes;
 import java.io.File;

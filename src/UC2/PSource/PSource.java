@@ -3,6 +3,7 @@
  */
 package UC2.PSource;
 
+import UC2.PProducer.PProducer;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
@@ -13,13 +14,12 @@ import javax.swing.SwingUtilities;
 public class PSource extends javax.swing.JFrame {
     
     private static final String FILENAME = "src/Data/sensorShort.txt";
-    private static final int PORT = 5000;
     private static final String HOSTNAME = "localhost";
     
     /**
      * Creates new form PSource
      */
-    public PSource(String filename, String hostname, int port) {
+    public PSource(String filename, String[] hostname, int[] port) {
         initComponents();
         this.setVisible(true);
         Data data = new Data(filename, hostname, port);
@@ -115,20 +115,51 @@ public class PSource extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             if((args.length % 2) != 0){
                 System.out.println("Optional arguments: "
-                        + "\n\t-h <PRODUCER_HOSTNAME>: Producer Hostname (Default = \"" + HOSTNAME + "\")"
-                        + "\n\t-p <PRODUCER_PORT>: Producer Server Port (Default = " + PORT + ")"
+                        + "\n\t-h1 <PRODUCER_HOSTNAME>: Producer 1 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p1 <PRODUCER_PORT>: Producer 1 Server Port (Default = " + PProducer.SERVER_PORT[0] + ")"
+                        + "\n\t-h2 <PRODUCER_HOSTNAME>: Producer 2 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p2 <PRODUCER_PORT>: Producer 2 Server Port (Default = " + PProducer.SERVER_PORT[1] + ")"
+                        + "\n\t-h3 <PRODUCER_HOSTNAME>: Producer 3 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p3 <PRODUCER_PORT>: Producer 3 Server Port (Default = " + PProducer.SERVER_PORT[2] + ")"
+                        + "\n\t-h4 <PRODUCER_HOSTNAME>: Producer 4 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p4 <PRODUCER_PORT>: Producer 4 Server Port (Default = " + PProducer.SERVER_PORT[3] + ")"
+                        + "\n\t-h5 <PRODUCER_HOSTNAME>: Producer 5 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p5 <PRODUCER_PORT>: Producer 5 Server Port (Default = " + PProducer.SERVER_PORT[4] + ")"
+                        + "\n\t-h6 <PRODUCER_HOSTNAME>: Producer 6 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p6 <PRODUCER_PORT>: Producer 6 Server Port (Default = " + PProducer.SERVER_PORT[5] + ")"
                         + "\n\t-f <FILENAME>: Sensors Filename (Default = " + FILENAME + ")");
                 throw new IllegalArgumentException("Invalid Arguments");
             }
             String filename = FILENAME;
-            String hostname = HOSTNAME;
-            int port = PORT;
+            String hostname[] = {HOSTNAME, HOSTNAME, HOSTNAME, HOSTNAME, HOSTNAME, HOSTNAME};
+            int port[] = {PProducer.SERVER_PORT[0],PProducer.SERVER_PORT[1], PProducer.SERVER_PORT[2]
+                , PProducer.SERVER_PORT[3], PProducer.SERVER_PORT[4], PProducer.SERVER_PORT[5]};
             try{
                 for (int i = 0; i < args.length; i+=2) {
                     switch(args[i].toLowerCase()){
-                        case "-h": hostname = args[i+1];
+                        case "-h1": hostname[0] = args[i+1];
                                    break;
-                        case "-p": port = Integer.valueOf(args[i+1]);
+                        case "-p1": port[0] = Integer.valueOf(args[i+1]);
+                                   break;
+                        case "-h2": hostname[1] = args[i+1];
+                                   break;
+                        case "-p2": port[1] = Integer.valueOf(args[i+1]);
+                                   break;
+                        case "-h3": hostname[2] = args[i+1];
+                                   break;
+                        case "-p3": port[2] = Integer.valueOf(args[i+1]);
+                                   break;
+                        case "-h4": hostname[3] = args[i+1];
+                                   break;
+                        case "-p4": port[3] = Integer.valueOf(args[i+1]);
+                                   break;
+                        case "-h5": hostname[4] = args[i+1];
+                                   break;
+                        case "-p5": port[4] = Integer.valueOf(args[i+1]);
+                                   break;
+                        case "-h6": hostname[5] = args[i+1];
+                                   break;
+                        case "-p6": port[5] = Integer.valueOf(args[i+1]);
                                    break;
                         case "-f": filename = args[i+1];
                                    break;
@@ -137,8 +168,18 @@ public class PSource extends javax.swing.JFrame {
                 }
             } catch(IllegalArgumentException ex){
                 System.out.println("Optional arguments: "
-                        + "\n\t-h <PRODUCER_HOSTNAME>: Producer Hostname (Default = \"" + HOSTNAME + "\")"
-                        + "\n\t-p <PRODUCER_PORT>: Producer Server Port (Default = " + PORT + ")"
+                        + "\n\t-h1 <PRODUCER_HOSTNAME>: Producer 1 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p1 <PRODUCER_PORT>: Producer 1 Server Port (Default = " + PProducer.SERVER_PORT[0] + ")"
+                        + "\n\t-h2 <PRODUCER_HOSTNAME>: Producer 2 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p2 <PRODUCER_PORT>: Producer 2 Server Port (Default = " + PProducer.SERVER_PORT[1] + ")"
+                        + "\n\t-h3 <PRODUCER_HOSTNAME>: Producer 3 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p3 <PRODUCER_PORT>: Producer 3 Server Port (Default = " + PProducer.SERVER_PORT[2] + ")"
+                        + "\n\t-h4 <PRODUCER_HOSTNAME>: Producer 4 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p4 <PRODUCER_PORT>: Producer 4 Server Port (Default = " + PProducer.SERVER_PORT[3] + ")"
+                        + "\n\t-h5 <PRODUCER_HOSTNAME>: Producer 5 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p5 <PRODUCER_PORT>: Producer 5 Server Port (Default = " + PProducer.SERVER_PORT[4] + ")"
+                        + "\n\t-h6 <PRODUCER_HOSTNAME>: Producer 6 Hostname (Default = \"" + HOSTNAME + "\")"
+                        + "\n\t-p6 <PRODUCER_PORT>: Producer 6 Server Port (Default = " + PProducer.SERVER_PORT[5] + ")"
                         + "\n\t-f <FILENAME>: Sensors Filename (Default = " + FILENAME + ")");
                 throw new IllegalArgumentException("Invalid Arguments");
             }

@@ -1,7 +1,6 @@
 
 package UC2.Communication;
 
-import UC1.Communication.Message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

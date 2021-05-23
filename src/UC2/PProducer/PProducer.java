@@ -20,8 +20,9 @@ import org.apache.kafka.clients.producer.ProducerRecord;
  */
 public class PProducer extends javax.swing.JFrame {
 
-    private static final int SERVER_PORT = 5000;
-    private static final String TOPIC = "Sensor";
+    public static final int NUM_PRODUCERS = 6;
+    public static final int[] SERVER_PORT = {5000, 5001, 5002, 5003, 5004, 5005};
+    public static final String TOPIC = "Sensor";
     
     /**
      * Creates new form PProducer
@@ -187,20 +188,28 @@ public class PProducer extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(PProducer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+       
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            int serverPort = SERVER_PORT;
-            if(args.length == 1){
-                try{
-                    serverPort = Integer.parseInt(args[0]);
-                }catch (NumberFormatException ex){
-                    System.out.println("Invalid parameter!\nParameters: [Optional: serverPort (Default = " + SERVER_PORT +")]\n");
+            
+            int serverPorts[] = {SERVER_PORT[0], SERVER_PORT[1], SERVER_PORT[2], SERVER_PORT[3], SERVER_PORT[4], SERVER_PORT[5]};
+            if(args.length == NUM_PRODUCERS){
+                for (int i = 0; i < NUM_PRODUCERS; i++) {
+                    try{
+                        serverPorts[i] = Integer.parseInt(args[i]);
+                    }catch (NumberFormatException ex){
+                        System.out.println("Invalid parameter!\nParameters: [Optional: serverPort1 serverPort2 serverPort3 serverPort4 serverPort5 serverPort6"
+                                + "(Default = " + SERVER_PORT[0] +" to " + SERVER_PORT[NUM_PRODUCERS-1] +")]\n");
+                    }
                 }
             } else if (args.length > 1){
-                System.out.println("Invalid parameters!\nParameters: [Optional: serverPort (Default = " + SERVER_PORT +")]\n");
+                System.out.println("Invalid parameter!\nParameters: [Optional: serverPort1 serverPort2 serverPort3 serverPort4 serverPort5 serverPort6"
+                            + "(Default = " + SERVER_PORT[0] +" to " + SERVER_PORT[NUM_PRODUCERS -1] +")]\n");
             }
-            new PProducer(serverPort);
+            for (int i = 0; i < serverPorts.length; i++) {
+                new PProducer(serverPorts[i]);
+            }
         });
     }
 
