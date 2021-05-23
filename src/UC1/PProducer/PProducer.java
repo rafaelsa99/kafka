@@ -8,8 +8,13 @@ import UC1.Communication.Message;
 import UC1.Record.Record;
 import UC1.Record.RecordSerializer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -69,10 +74,36 @@ public class PProducer extends javax.swing.JFrame {
         try {
             SwingUtilities.invokeAndWait(() -> {
                 System.out.println(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
+                appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
             });
         } catch (InterruptedException | InvocationTargetException ex) {
             System.out.println(ex.toString());
         }
+    }
+    
+    public static void appendMessageToInterface(String message){
+        DefaultListModel model;
+        model = (DefaultListModel)jListMessages.getModel();
+        model.addElement(message);
+    }
+    
+    
+    public static void updateInterface(ArrayList<Message> records){
+        DefaultTableModel model;
+        model = (DefaultTableModel)jTable_Records.getModel();
+//        model.addRow(new Object[]{record.getSensorId(),});
+//        try {
+//            SwingUtilities.invokeAndWait(() -> {
+//                jTable_Records.setValueAt(sensorId, 0, 1);
+//            });
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InvocationTargetException ex) {
+//            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        records.forEach(record -> {
+            model.addRow(new Object[]{record.getSensorId(),0});
+        });
     }
     
 
@@ -208,9 +239,9 @@ public class PProducer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabel_TitleTotalRecords;
     private javax.swing.JLabel jLabel_TotalRecords;
-    private javax.swing.JList<String> jListMessages;
+    private static javax.swing.JList<String> jListMessages;
     private javax.swing.JScrollPane jScrollPaneMessages;
-    private javax.swing.JScrollPane jScrollPane_Records;
-    private javax.swing.JTable jTable_Records;
+    private static javax.swing.JScrollPane jScrollPane_Records;
+    private static javax.swing.JTable jTable_Records;
     // End of variables declaration//GEN-END:variables
 }

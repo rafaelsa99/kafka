@@ -3,11 +3,15 @@
  */
 package UC1.PConsumer;
 
+import UC1.Communication.Message;
 import UC1.Record.Record;
 import UC1.Record.RecordDeserializer;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
+import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -57,7 +61,33 @@ public class PConsumer extends javax.swing.JFrame {
                 System.out.println(ex);
             }
         }
-    }        
+    }
+    
+        public static void appendMessageToInterface(String message){
+        DefaultListModel model;
+        model = (DefaultListModel)jListMessages.getModel();
+        model.addElement(message);
+    }
+    
+    
+    public static void updateInterface(ArrayList<Message> records){
+        DefaultTableModel model;
+        model = (DefaultTableModel)jTable_Records.getModel();
+//        model.addRow(new Object[]{record.getSensorId(),});
+//        try {
+//            SwingUtilities.invokeAndWait(() -> {
+//                jTable_Records.setValueAt(sensorId, 0, 1);
+//            });
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InvocationTargetException ex) {
+//            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        records.forEach(record -> {
+            model.addRow(new Object[]{record.getSensorId(),0});
+        });
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -180,9 +210,9 @@ public class PConsumer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabel_TitleTotalRecords;
     private javax.swing.JLabel jLabel_TotalRecords;
-    private javax.swing.JList<String> jListMessages;
+    private static javax.swing.JList<String> jListMessages;
     private javax.swing.JScrollPane jScrollPaneMessages;
     private javax.swing.JScrollPane jScrollPane_Records;
-    private javax.swing.JTable jTable_Records;
+    private static javax.swing.JTable jTable_Records;
     // End of variables declaration//GEN-END:variables
 }
