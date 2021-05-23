@@ -34,6 +34,7 @@ public class PProducer extends javax.swing.JFrame {
      */
     public PProducer(int serverPort) {
         initComponents();
+        createInterface(6);
         this.setVisible(true);
         startServer(serverPort);
     }
@@ -88,22 +89,27 @@ public class PProducer extends javax.swing.JFrame {
     }
     
     
-    public static void updateInterface(ArrayList<Message> records){
+    public static void updateInterface(int sensorId){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();
-//        model.addRow(new Object[]{record.getSensorId(),});
-//        try {
-//            SwingUtilities.invokeAndWait(() -> {
-//                jTable_Records.setValueAt(sensorId, 0, 1);
-//            });
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (InvocationTargetException ex) {
-//            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        records.forEach(record -> {
-            model.addRow(new Object[]{record.getSensorId(),0});
-        });
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                int value = Integer.valueOf(jTable_Records.getValueAt(sensorId, 1).toString());
+                jTable_Records.setValueAt(++value, sensorId, 1);
+            });
+        } catch (InterruptedException ex) {
+            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(PProducer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static void createInterface(int numSensor){
+    DefaultTableModel model;
+    model = (DefaultTableModel)jTable_Records.getModel();
+    for(int i = 0; i< numSensor; i++){
+        model.addRow(new Object[]{i,0});
+    }
     }
     
 
