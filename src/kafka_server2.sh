@@ -1,4 +1,3 @@
 # scripts to initialize the Kafka Cluster
-cd ../kafka
 
-bin/kafka-server-start.sh config/server2.properties
+../kafka/bin/kafka-server-start.sh ../serverConfig/server2.properties
