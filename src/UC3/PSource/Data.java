@@ -26,7 +26,6 @@ public class Data extends Thread{
     }
     
     private void readFile() {
-        int i = 0;
         Scanner myReader;
         String[] line;
         try {
