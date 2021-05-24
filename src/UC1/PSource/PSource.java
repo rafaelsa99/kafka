@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
  */
 public class PSource extends javax.swing.JFrame {
     /** Filename for the sensor data. */
-    private static final String FILENAME = "src/Data/sensorShort.txt";
+    private static final String FILENAME = "src/Data/sensor.txt";
     /** Port of the socket of the producer. */
     private static final int PORT = 5000;
     /** Host name of the producer. */

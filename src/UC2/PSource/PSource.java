@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
  */
 public class PSource extends javax.swing.JFrame {
     /** Filename for the sensor data. */
-    private static final String FILENAME = "src/Data/sensorShort.txt";
+    private static final String FILENAME = "src/Data/sensor.txt";
     /** Host name of the producer. */
     private static final String HOSTNAME = "localhost";
     
