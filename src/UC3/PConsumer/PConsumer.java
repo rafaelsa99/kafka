@@ -42,7 +42,7 @@ public class PConsumer extends javax.swing.JFrame {
             props.put("group.id", GROUP);
             props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
             props.put("value.deserializer", RecordDeserializer.class.getName());
-            //props.put("fetch.min.bytes", ????);
+            props.put("fetch.min.bytes", 100000);
             props.put("enable.auto.commit", false);
             try( 
                 KafkaConsumer<String, Record> consumer = new KafkaConsumer<>(props)) {            

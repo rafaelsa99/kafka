@@ -56,12 +56,12 @@ public class PProducer extends javax.swing.JFrame {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", RecordSerializer.class.getName());
         props.put("acks", "0");
-        //props.put("buffer.memory", ????);
-        //props.put("batch.size", ????);
-        //props.put("linger.ms", ????);
+        props.put("buffer.memory", 33554432);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 0);
         props.put("max.in.flight.requests.per.connection", 1);
         props.put("compression.type", "none");
-        //props.put("delivery.timeout.ms", ????);   
+        props.put("delivery.timeout.ms", 35000);   
         props.put("retries", 0);
         try (Producer<String, Record> producer = new KafkaProducer<>(props)) {
             ProducerRecord<String, Record> pRecord = new ProducerRecord<>(TOPIC, record);

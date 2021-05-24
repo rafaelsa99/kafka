@@ -46,9 +46,9 @@ public class PConsumer extends javax.swing.JFrame {
             props.put("group.id", Thread.currentThread().getName());
             props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
             props.put("value.deserializer", RecordDeserializer.class.getName());
-            //props.put("fetch.min.bytes", ????);
+            props.put("fetch.min.bytes", 100000);
             props.put("enable.auto.commit", true);
-            //props.put("auto.commit.interval.ms", ????);
+            props.put("auto.commit.interval.ms", 10000);
             try( 
                 KafkaConsumer<String, Record> consumer = new KafkaConsumer<>(props)) {            
                 //RebalanceListener rebalanceListener = new RebalanceListener(consumer);
@@ -58,7 +58,7 @@ public class PConsumer extends javax.swing.JFrame {
                     ConsumerRecords<String, Record> records = consumer.poll(Duration.ofMillis(100));
 
                     for (ConsumerRecord<String, Record> record : records){
-                        srDataReplicas.addReplica(record.value());
+                        new RecordThread(record.value()).start();
                     }
                 }
             }
@@ -68,6 +68,19 @@ public class PConsumer extends javax.swing.JFrame {
         }
     }        
 
+    class RecordThread extends Thread{
+        private Record record;
+
+        public RecordThread(Record record) {
+            this.record = record;
+        }
+
+        @Override
+        public void run() {
+            srDataReplicas.addReplica(record);
+        }
+    }
+    
     public static void appendRecord(Record record){
         appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
         updateInterface(Integer.parseInt(record.getSensorId()));
