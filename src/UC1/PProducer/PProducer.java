@@ -1,6 +1,4 @@
-/*
- * ver package-info.java
- */
+
 package UC1.PProducer;
 
 import UC1.Communication.CServer;
@@ -17,12 +15,13 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 /**
- *
- * @author omp
+ * Producer.
+ * @author Rafael Sá (104552), Luís Laranjeira (81526)
  */
 public class PProducer extends javax.swing.JFrame {
-
+    /** Port for the server socket. */
     private static final int SERVER_PORT = 5000;
+    /** Topic name. */
     private static final String TOPIC = "Sensor";
     
     /**
@@ -36,6 +35,10 @@ public class PProducer extends javax.swing.JFrame {
         startServer(serverPort);
     }
     
+    /**
+     * Start the server to receive messages from the source.
+     * @param serverPort server port
+     */
     private void startServer(int serverPort) {
         CServer cServer = new CServer(serverPort);
         cServer.openServer();
@@ -44,8 +47,7 @@ public class PProducer extends javax.swing.JFrame {
     
     /**
     * Função: void sendToTopics Esta função cria o KafkaProducer para enviar as
-    * mensagens para os diferentes topicos.É ainda responsável pelo processamento
- e segurança ao enviar as diferentes mensagens.
+    * mensagens para os diferentes topicos.
      * @param record record to be sent
     */
     public static void sendToTopic(Record record){
@@ -67,23 +69,34 @@ public class PProducer extends javax.swing.JFrame {
             producer.send(pRecord);
         }
     }
-    
+    /**
+     * Update GUI with a new Record.
+     * @param record new record
+     */
     public static void appendRecord(Message record){
         appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
         updateInterface(Integer.parseInt(record.getSensorId()));
         updateTotalRecords();
     }
-    
+    /**
+     * Append the record string to the list.
+     * @param message record string
+     */
     public static void appendMessageToInterface(String message){
         DefaultListModel model = (DefaultListModel) jListMessages.getModel();
         model.addElement(message);
     }   
-    
+    /**
+     * Update the total number of records.
+     */
     public static void updateTotalRecords(){
         int total = Integer.parseInt(jLabel_TotalRecords.getText());
         jLabel_TotalRecords.setText(String.valueOf(++total));
     }
-    
+    /**
+     * Update sensor counters.
+     * @param sensorId sensor id to increment counter
+     */
     public static void updateInterface(int sensorId){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();
@@ -96,7 +109,10 @@ public class PProducer extends javax.swing.JFrame {
             System.out.println(ex.toString());
         }
     }
-    
+    /**
+     * Initialize sensors counters.
+     * @param numSensor number of sensors
+     */
     public static void createInterface(int numSensor){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();

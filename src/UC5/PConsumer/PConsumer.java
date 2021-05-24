@@ -1,6 +1,4 @@
-/*
- * ver package-info.java
- */
+
 package UC5.PConsumer;
 
 import UC5.Record.Record;
@@ -17,17 +15,19 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
- *
- * @author omp
+ * Consumer.
+ * @author Rafael Sá (104552), Luís Laranjeira (81526)
  */
 public class PConsumer extends javax.swing.JFrame {
 
-    private static final String TOPIC = "Sensor";         /* Topico de leitura */
-    private static final String GROUP = "SensorGroup";     /* Consumer Group */
+    /** Topic Name. */
+    private static final String TOPIC = "Sensor";      
+    /** Shared region of the aggregated data from the eplicas. */
     private static SRDataReplicas srDataReplicas;
+    /** Number of planes. */
     private static final int NUM_CONSUMER_REPLICAS = 3;
     /**
-     * Creates new form PConsumer
+     * Creates new form PConsumer.
      */
     public PConsumer() {
         initComponents();
@@ -37,6 +37,9 @@ public class PConsumer extends javax.swing.JFrame {
             new Reader().start();
     }
     
+    /**
+     * Thread to consume records from the topic.
+     */
     class Reader extends Thread{
 
         @Override
@@ -50,8 +53,6 @@ public class PConsumer extends javax.swing.JFrame {
             props.put("enable.auto.commit", false);
             try( 
                 KafkaConsumer<String, Record> consumer = new KafkaConsumer<>(props)) {            
-                //RebalanceListener rebalanceListener = new RebalanceListener(consumer);
-                //consumer.subscribe(Arrays.asList(TOPIC), rebalanceListener);
                 consumer.subscribe(Collections.singletonList(TOPIC));
                 while(true){
                     ConsumerRecords<String, Record> records = consumer.poll(Duration.ofMillis(100));
@@ -67,41 +68,66 @@ public class PConsumer extends javax.swing.JFrame {
             }
         }
     }        
-
+    /** Thread to process a record read from the Kafka topic. */
     class RecordThread extends Thread{
-        private Record record;
+        /**
+         * Record to be processed.
+         */
+        private final Record record;
 
+        /**
+         * Record thread instantiation.
+         * @param record Record to be processed
+         */
         public RecordThread(Record record) {
             this.record = record;
         }
 
+        /**
+         * Record thread life cycle.
+         */
         @Override
         public void run() {
             srDataReplicas.addReplica(record);
         }
     }
     
+    /**
+     * Update GUI with a new Record.
+     * @param record new record
+     */
     public static void appendRecord(Record record, Float avg){
         appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
         updateInterface(Integer.parseInt(record.getSensorId()));
         updateTAverage(avg);
         updateTotalRecords();
     }
-    
+    /**
+     * Update the total number of records.
+     */
     public static void updateTotalRecords(){
         int total = Integer.parseInt(jLabel_TotalRecords.getText());
         jLabel_TotalRecords.setText(String.valueOf(++total));
     }
-    
+    /**
+     * Updates the average temperature.
+     * @param recordTemperature new average
+     */
     public static void updateTAverage(Float recordTemperature){
         jLabel_avgTemp.setText(String.valueOf(recordTemperature));
     }
-    
+    /**
+     * Append the record string to the list.
+     * @param message record string
+     */
     public static void appendMessageToInterface(String message){
         DefaultListModel model = (DefaultListModel) jListMessages.getModel();
         model.addElement(message);
     }   
-    
+    /**
+     * Update sensor counters.
+     * @param sensorId sensor id to increment counter
+     */
     public static void updateInterface(int sensorId){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();
@@ -114,7 +140,10 @@ public class PConsumer extends javax.swing.JFrame {
             System.out.println(ex.toString());
         }
     }
-    
+    /**
+     * Initialize sensors counters.
+     * @param numSensor number of sensors
+     */
     public static void createInterface(int numSensor){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();

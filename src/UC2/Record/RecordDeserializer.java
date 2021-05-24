@@ -1,13 +1,12 @@
 package UC2.Record;
 
-import UC2.Record.Record;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
 import org.apache.kafka.common.serialization.Deserializer;
 
 /**
- *
+ * Record Deserializer.
  * @author Luís Laranjeira
  * @author Rafael Sá
  */

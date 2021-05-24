@@ -1,6 +1,4 @@
-/*
- * ver package-info.java
- */
+
 package UC2.PConsumer;
 
 import UC2.Record.Record;
@@ -17,15 +15,16 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
- *
- * @author omp
+ * Consumer.
+ * @author Rafael Sá (104552), Luís Laranjeira (81526)
  */
 public class PConsumer extends javax.swing.JFrame {
-
+    /** Topic Name. */
     private static final String TOPIC = "Sensor";         /* Topico de leitura */
+    /** Group ID. */
     private static final String GROUP = "SensorGroup";     /* Consumer Group */
     /**
-     * Creates new form PConsumer
+     * Creates new form PConsumer.
      */
     public PConsumer() {
         initComponents();
@@ -33,8 +32,13 @@ public class PConsumer extends javax.swing.JFrame {
         new Reader().start();
     }
     
+    /**
+     * Thread to consume records from the topic.
+     */
     class Reader extends Thread{
-
+        /**
+         * Reader life cycle.
+         */
         @Override
         public void run() {
             Properties props = new Properties();
@@ -47,16 +51,12 @@ public class PConsumer extends javax.swing.JFrame {
             props.put("auto.commit.interval.ms", 10000);
             try( 
                 KafkaConsumer<String, Record> consumer = new KafkaConsumer<>(props)) {            
-                //RebalanceListener rebalanceListener = new RebalanceListener(consumer);
-                //consumer.subscribe(Arrays.asList(TOPIC), rebalanceListener);
                 consumer.subscribe(Collections.singletonList(TOPIC));
                 while(true){
                     ConsumerRecords<String, Record> records = consumer.poll(Duration.ofMillis(100));
-
                     for (ConsumerRecord<String, Record> record : records){
                         appendRecord(record.value());
                     }
-                    //consumer.commitSync(); //OR ASYNC????
                 }
             }
             catch(Exception ex){
@@ -64,23 +64,34 @@ public class PConsumer extends javax.swing.JFrame {
             }
         }
     }        
-
+    /**
+     * Update GUI with a new Record.
+     * @param record new record
+     */
     public static void appendRecord(Record record){
         appendMessageToInterface(record.getSensorId() + " " + record.getTemperature() + " " + record.getTimestamp());
         updateInterface(Integer.parseInt(record.getSensorId()));
         updateTotalRecords();
     }
-    
+    /**
+     * Update the total number of records.
+     */
     public static void updateTotalRecords(){
         int total = Integer.parseInt(jLabel_TotalRecords.getText());
         jLabel_TotalRecords.setText(String.valueOf(++total));
     }
-    
+    /**
+     * Append the record string to the list.
+     * @param message record string
+     */
     public static void appendMessageToInterface(String message){
         DefaultListModel model = (DefaultListModel) jListMessages.getModel();
         model.addElement(message);
     }   
-    
+    /**
+     * Update sensor counters.
+     * @param sensorId sensor id to increment counter
+     */
     public static void updateInterface(int sensorId){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();
@@ -93,7 +104,10 @@ public class PConsumer extends javax.swing.JFrame {
             System.out.println(ex.toString());
         }
     }
-    
+    /**
+     * Initialize sensors counters.
+     * @param numSensor number of sensors
+     */
     public static void createInterface(int numSensor){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();

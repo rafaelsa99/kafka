@@ -1,6 +1,4 @@
-/*
- * ver package-info.java
- */
+
 package UC4.PProducer;
 
 import UC4.Communication.CServer;
@@ -18,13 +16,15 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 /**
- *
- * @author omp
+ * Producer.
+ * @author Rafael Sá (104552), Luís Laranjeira (81526)
  */
 public class PProducer extends javax.swing.JFrame {
-
+    /** Number of producers. */
     public static final int NUM_PRODUCERS = 6;
+    /** Port for the server socket. */
     public static final int SERVER_PORT = 5000;
+    /** Topic name. */
     public static final String TOPIC = "Sensor";
     
     private static ReentrantLock rl;
@@ -39,7 +39,10 @@ public class PProducer extends javax.swing.JFrame {
         startServer(serverPort);
         rl = new ReentrantLock(true);
     }
-    
+    /**
+     * Creates new form PProducer
+     * @param serverPort server port receive messages from PSOURCE
+     */
     private void startServer(int serverPort) {
         CServer cServer = new CServer(serverPort);
         cServer.openServer();
@@ -48,8 +51,7 @@ public class PProducer extends javax.swing.JFrame {
     
     /**
     * Função: void sendToTopics Esta função cria o KafkaProducer para enviar as
-    * mensagens para os diferentes topicos.É ainda responsável pelo processamento
- e segurança ao enviar as diferentes mensagens.
+    * mensagens para os diferentes topicos.
      * @param record record to be sent
     */
     public static void sendToTopic(Record record){
@@ -71,7 +73,10 @@ public class PProducer extends javax.swing.JFrame {
             producer.send(pRecord);
         }
     }
-    
+    /**
+     * Update GUI with a new Record.
+     * @param record new record
+     */
     public static void appendRecord(Message record){
         try{
             rl.lock();
@@ -82,17 +87,25 @@ public class PProducer extends javax.swing.JFrame {
             rl.unlock();
         }
     }
-    
+    /**
+     * Append the record string to the list.
+     * @param message record string
+     */
     public static void appendMessageToInterface(String message){
         DefaultListModel model = (DefaultListModel) jListMessages.getModel();
         model.addElement(message);
     }   
-    
+    /**
+     * Update the total number of records.
+     */
     public static void updateTotalRecords(){
         int total = Integer.parseInt(jLabel_TotalRecords.getText());
         jLabel_TotalRecords.setText(String.valueOf(++total));
     }
-    
+    /**
+     * Update sensor counters.
+     * @param sensorId sensor id to increment counter
+     */
     public static void updateInterface(int sensorId){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();
@@ -105,7 +118,10 @@ public class PProducer extends javax.swing.JFrame {
             System.out.println(ex.toString());
         }
     }
-    
+    /**
+     * Initialize sensors counters.
+     * @param numSensor number of sensors
+     */
     public void createInterface(int numSensor){
         DefaultTableModel model;
         model = (DefaultTableModel)jTable_Records.getModel();

@@ -9,21 +9,37 @@ import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- *
- * @author rafael
+ * Shared region to aggregate data from the consumer replicas.
+ * @author Rafael Sá (104552), Luís Laranjeira (81526)
  */
 public class SRDataReplicas {
-    
+    /**
+     * Reentrant lock.
+     */
     private final ReentrantLock rl;
+    /**
+     * Number of consumer replicas.
+     */
     private final int numReplicas;
+    /**
+     * Data received from the several replicas.
+     */
     private HashMap<Integer, ArrayList<Record>> dataReplicas;
     
+    /**
+     * Shared region for the replica data instantiation.
+     * @param numReplicas number of replicas
+     */
     public SRDataReplicas(int numReplicas) {
         this.rl = new ReentrantLock(true);
         this.numReplicas = numReplicas;
         dataReplicas = new HashMap<>();
     }
     
+    /**
+     * Receive new data from a consumer replica.
+     * @param record new record
+     */
     public void addReplica(Record record){
         try{
             rl.lock();
@@ -39,6 +55,11 @@ public class SRDataReplicas {
         }
     }
     
+    /**
+     * Get the temperature of the majority of the replicas.
+     * @param records records from the several replicas
+     * @return the majority record
+     */
     private Record getMajority(ArrayList<Record> records){
         HashMap<Float, Integer> counters = new HashMap<>();
         for (Record record : records) {

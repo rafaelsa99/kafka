@@ -10,21 +10,31 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
- *
- * @author rafael
+ * Class to read data from the file and send to the producer via Sockets.
+ * @author Rafael Sá (104552), Luís Laranjeira (81526)
  */
 public class Data extends Thread{
     
-    private final File file;                                /* Ficheiro de leitura */
-    CClient[] cClient;
+    /** File with the data. */
+    private final File file; 
+    /** Communication clients. */
+    private CClient[] cClient;
     
+    /**
+     * Data instantiation.
+     * @param filename filename
+     * @param hostname producers hostnames
+     * @param port producers ports
+     */
     public Data(String filename, String[] hostname, int[] port) {
         file = new File(filename);
         cClient = new CClient[PProducer.NUM_PRODUCERS];
         for (int i = 0; i < cClient.length; i++) 
             cClient[i] = new CClient(hostname[i], port[i]); 
     }
-    
+    /**
+     * Read lines from the file and send to the producer.
+     */
     private void readFile() {
         Scanner myReader;
         String[] line;
@@ -40,7 +50,9 @@ public class Data extends Thread{
             System.out.println(ex);
         }
     }
-
+    /**
+     * Data reader life cycle.
+     */
     @Override
     public void run() {
         readFile();

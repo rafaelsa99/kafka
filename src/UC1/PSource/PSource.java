@@ -1,23 +1,26 @@
-/*
- * ver package-info.java
- */
+
 package UC1.PSource;
 
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
 /**
- *
- * @author omp
+ * Source.
+ * @author Rafael Sá (104552), Luís Laranjeira (81526)
  */
 public class PSource extends javax.swing.JFrame {
-    
+    /** Filename for the sensor data. */
     private static final String FILENAME = "src/Data/sensorShort.txt";
+    /** Port of the socket of the producer. */
     private static final int PORT = 5000;
+    /** Host name of the producer. */
     private static final String HOSTNAME = "localhost";
     
     /**
-     * Creates new form PSource
+     * Creates new form PSource.
+     * @param filename file name
+     * @param hostname producer host name
+     * @param port producer port
      */
     public PSource(String filename, String hostname, int port) {
         initComponents();
@@ -74,6 +77,7 @@ public class PSource extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /** End the GUI. */
     public static void endGUI(){
         try {
             SwingUtilities.invokeAndWait(() -> {

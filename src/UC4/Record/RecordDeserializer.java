@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Deserializer;
 
 /**
- *
+ * Record Deserializer.
  * @author Luís Laranjeira
  * @author Rafael Sá
  */

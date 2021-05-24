@@ -6,12 +6,12 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Serializer;
 
 /**
- *
+ * Record Serializer.
  * @author Luís Laranjeira
  * @author Rafael Sá
  */
 public class RecordSerializer implements Serializer<Record>{
-    private String encoding = "UTF8";
+    private final String encoding = "UTF8";
     
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
